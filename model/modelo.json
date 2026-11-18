@@ -1,0 +1,554 @@
+{
+  "modelName": "trabalho07",
+  "places": [
+    {
+      "name": "P_chegada",
+      "initialMarking": 1,
+      "stringMarking": "1",
+      "initialStringMarking": "1",
+      "id": "p1",
+      "x": 319.0028419494629,
+      "y": 426.3409118652344
+    },
+    {
+      "name": "P_CapBuffer",
+      "initialMarking": 20,
+      "stringMarking": "C_BUF",
+      "initialStringMarking": "C_BUF",
+      "id": "p3",
+      "x": 319.0028419494629,
+      "y": 189.34091186523438
+    },
+    {
+      "name": "P_espera",
+      "initialMarking": 0,
+      "stringMarking": "0",
+      "initialStringMarking": "0",
+      "id": "p5",
+      "x": 231.0028419494629,
+      "y": 303.3409118652344
+    },
+    {
+      "name": "P_Fila",
+      "initialMarking": 0,
+      "stringMarking": "0",
+      "initialStringMarking": "0",
+      "id": "p2",
+      "x": 409.0028419494629,
+      "y": 297.3409118652344
+    },
+    {
+      "name": "P_NucLivre",
+      "initialMarking": 4,
+      "stringMarking": "C_NUC",
+      "initialStringMarking": "C_NUC",
+      "id": "p4",
+      "x": 498.0028419494629,
+      "y": 189.34091186523438
+    },
+    {
+      "name": "P_Proc",
+      "initialMarking": 0,
+      "stringMarking": "0",
+      "initialStringMarking": "0",
+      "id": "p6",
+      "x": 588.0028419494629,
+      "y": 297.3409118652344
+    },
+    {
+      "name": "P_Concluido",
+      "initialMarking": 0,
+      "stringMarking": "0",
+      "initialStringMarking": "0",
+      "id": "p7",
+      "x": 663.0028419494629,
+      "y": 402.3409118652344
+    }
+  ],
+  "definitions": [
+    {
+      "name": "C_BUF",
+      "type": "INTEGER",
+      "value": "20",
+      "id": "param1794953088933"
+    },
+    {
+      "name": "C_NUC",
+      "type": "INTEGER",
+      "value": "4",
+      "id": "param1794953105157"
+    },
+    {
+      "name": "AR",
+      "type": "DOUBLE",
+      "value": "0.08",
+      "id": "param1794953123189"
+    },
+    {
+      "name": "T_SERV",
+      "type": "DOUBLE",
+      "value": "50",
+      "id": "param1794955282502"
+    }
+  ],
+  "rewardMeasures": [
+    {
+      "name": "U",
+      "expression": "(E{#P_Proc} / C_NUC) * 100",
+      "id": "metric1794955411910",
+      "unit": ""
+    },
+    {
+      "name": "TP",
+      "expression": "E{#P_Proc} / T_SERV",
+      "id": "metric1794955425310",
+      "unit": ""
+    },
+    {
+      "name": "MRT",
+      "expression": "(E{#P_Fila} + E{#P_Proc}) / (E{#P_Proc} / T_SERV)",
+      "id": "metric1794955495486",
+      "unit": ""
+    },
+    {
+      "name": "MQT",
+      "expression": "E{#P_Fila} / (E{#P_Proc} / T_SERV)",
+      "id": "metric1794955511222",
+      "unit": ""
+    },
+    {
+      "name": "DP",
+      "expression": "min(100, abs((1 - ((E{#P_Proc} / T_SERV) / AR)) * 100))",
+      "id": "metric1794956058822",
+      "unit": ""
+    }
+  ],
+  "transitions": [
+    {
+      "name": "T_Chegad",
+      "type": "TIMED",
+      "firingPolicy": "SINGLE_SERVER",
+      "raceType": "RACE_WITH_ENABLING_MEMORY",
+      "priority": 1,
+      "inputArcs": [
+        {
+          "type": "INPUT",
+          "place": "P_chegada",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "outputArcs": [
+        {
+          "type": "OUTPUT",
+          "place": "P_espera",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "inhibitorArcs": [],
+      "distribution": {
+        "type": "exponential",
+        "parameters": {
+          "Mean delay": "1 / AR"
+        }
+      },
+      "id": "t1",
+      "x": 141.0028419494629,
+      "y": 303.3409118652344
+    },
+    {
+      "name": "T_Servico",
+      "type": "TIMED",
+      "firingPolicy": "SINGLE_SERVER",
+      "raceType": "RACE_WITH_ENABLING_MEMORY",
+      "priority": 1,
+      "inputArcs": [
+        {
+          "type": "INPUT",
+          "place": "P_Proc",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "outputArcs": [
+        {
+          "type": "OUTPUT",
+          "place": "P_Concluido",
+          "multiplicity": 1,
+          "weight": 1
+        },
+        {
+          "type": "OUTPUT",
+          "place": "P_NucLivre",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "inhibitorArcs": [],
+      "distribution": {
+        "type": "exponential",
+        "parameters": {
+          "Mean delay": "T_SERV"
+        }
+      },
+      "id": "t2",
+      "x": 663.0028419494629,
+      "y": 297.3409118652344
+    },
+    {
+      "name": "T_Descarte",
+      "type": "IMMEDIATE",
+      "firingPolicy": "SINGLE_SERVER",
+      "raceType": "RACE_WITH_ENABLING_MEMORY",
+      "priority": 1,
+      "inputArcs": [
+        {
+          "type": "INPUT",
+          "place": "P_espera",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "outputArcs": [
+        {
+          "type": "OUTPUT",
+          "place": "P_chegada",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "inhibitorArcs": [
+        {
+          "type": "INHIBITOR",
+          "place": "P_CapBuffer",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "weight": 1,
+      "id": "t3",
+      "x": 231.0028419494629,
+      "y": 189.34091186523438
+    },
+    {
+      "name": "T_AlocaNuc",
+      "type": "IMMEDIATE",
+      "firingPolicy": "SINGLE_SERVER",
+      "raceType": "RACE_WITH_ENABLING_MEMORY",
+      "priority": 1,
+      "inputArcs": [
+        {
+          "type": "INPUT",
+          "place": "P_Fila",
+          "multiplicity": 1,
+          "weight": 1
+        },
+        {
+          "type": "INPUT",
+          "place": "P_NucLivre",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "outputArcs": [
+        {
+          "type": "OUTPUT",
+          "place": "P_CapBuffer",
+          "multiplicity": 1,
+          "weight": 1
+        },
+        {
+          "type": "OUTPUT",
+          "place": "P_Proc",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "inhibitorArcs": [],
+      "weight": 1,
+      "id": "t4",
+      "x": 498.0028419494629,
+      "y": 297.3409118652344
+    },
+    {
+      "name": "T_Admissao",
+      "type": "IMMEDIATE",
+      "firingPolicy": "SINGLE_SERVER",
+      "raceType": "RACE_WITH_ENABLING_MEMORY",
+      "priority": 1,
+      "inputArcs": [
+        {
+          "type": "INPUT",
+          "place": "P_espera",
+          "multiplicity": 1,
+          "weight": 1
+        },
+        {
+          "type": "INPUT",
+          "place": "P_CapBuffer",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "outputArcs": [
+        {
+          "type": "OUTPUT",
+          "place": "P_Fila",
+          "multiplicity": 1,
+          "weight": 1
+        },
+        {
+          "type": "OUTPUT",
+          "place": "P_chegada",
+          "multiplicity": 1,
+          "weight": 1
+        }
+      ],
+      "inhibitorArcs": [],
+      "weight": 2,
+      "id": "t5",
+      "x": 319.0028419494629,
+      "y": 297.3409118652344
+    }
+  ],
+  "visualElements": [],
+  "arcs": [
+    {
+      "id": "a2",
+      "source": null,
+      "target": null,
+      "targetPos": {
+        "x": 392.0028419494629,
+        "y": 305.3409118652344
+      },
+      "type": "normal",
+      "weight": "1",
+      "lineType": "straight"
+    },
+    {
+      "id": "a4",
+      "source": null,
+      "target": "p3",
+      "type": "normal",
+      "weight": "1",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a5",
+      "source": "p3",
+      "target": null,
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "lineType": "straight"
+    },
+    {
+      "id": "a6",
+      "source": null,
+      "target": null,
+      "targetPos": {
+        "x": 674.0028419494629,
+        "y": 305.3409118652344
+      },
+      "type": "normal",
+      "weight": "1",
+      "lineType": "straight"
+    },
+    {
+      "id": "a8",
+      "source": null,
+      "target": "p5",
+      "type": "normal",
+      "weight": "1",
+      "targetAnchorAngle": 270,
+      "lineType": "straight"
+    },
+    {
+      "id": "a10",
+      "source": null,
+      "target": null,
+      "targetPos": {
+        "x": 674.0028419494629,
+        "y": 305.3409118652344
+      },
+      "type": "normal",
+      "weight": "1",
+      "lineType": "straight"
+    },
+    {
+      "id": "a11",
+      "source": null,
+      "target": null,
+      "targetPos": {
+        "x": 392.0028419494629,
+        "y": 305.3409118652344
+      },
+      "type": "normal",
+      "weight": "1",
+      "lineType": "straight"
+    },
+    {
+      "id": "a1",
+      "source": "p1",
+      "target": "t1",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a3",
+      "source": "t1",
+      "target": "p5",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a7",
+      "source": "p5",
+      "target": "t5",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 150.25511870305775,
+      "lineType": "straight"
+    },
+    {
+      "id": "a9",
+      "source": "p3",
+      "target": "t5",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "bottom",
+      "targetAnchorAngle": 270,
+      "lineType": "straight"
+    },
+    {
+      "id": "a12",
+      "source": "t5",
+      "target": "p2",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a13",
+      "source": "t5",
+      "target": "p1",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "bottom",
+      "targetAnchorAngle": 270,
+      "lineType": "straight"
+    },
+    {
+      "id": "a14",
+      "source": "p5",
+      "target": "t3",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "top",
+      "targetAnchorAngle": 90,
+      "lineType": "straight"
+    },
+    {
+      "id": "a15",
+      "source": "p3",
+      "target": "t3",
+      "type": "inhibitor",
+      "weight": "1",
+      "sourceAnchor": "left",
+      "targetAnchorAngle": 10.304846468766016,
+      "lineType": "straight"
+    },
+    {
+      "id": "a17",
+      "source": "p2",
+      "target": "t4",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 165.9637565320735,
+      "lineType": "straight"
+    },
+    {
+      "id": "a18",
+      "source": "p4",
+      "target": "t4",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "bottom",
+      "targetAnchorAngle": 270,
+      "lineType": "straight"
+    },
+    {
+      "id": "a19",
+      "source": "t4",
+      "target": "p3",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "bottom",
+      "targetAnchorAngle": 9.462322208025626,
+      "lineType": "straight"
+    },
+    {
+      "id": "a20",
+      "source": "t4",
+      "target": "p6",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a21",
+      "source": "p6",
+      "target": "t2",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "right",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    },
+    {
+      "id": "a22",
+      "source": "t2",
+      "target": "p7",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "bottom",
+      "targetAnchorAngle": 270,
+      "lineType": "straight"
+    },
+    {
+      "id": "a23",
+      "source": "t2",
+      "target": "p4",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "top",
+      "targetAnchorAngle": 17.65012421993015,
+      "lineType": "straight"
+    },
+    {
+      "id": "a16",
+      "source": "t3",
+      "target": "p1",
+      "type": "normal",
+      "weight": "1",
+      "sourceAnchor": "left",
+      "targetAnchorAngle": 180,
+      "lineType": "straight"
+    }
+  ],
+  "chartSquare": false
+}
