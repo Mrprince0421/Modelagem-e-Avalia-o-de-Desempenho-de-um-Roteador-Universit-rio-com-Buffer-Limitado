@@ -1,4 +1,4 @@
-# Modelagem e Avaliação de Desempenho de um Roteador Universitário com Buffer Limitado Utilizando Redes de Petri Estocásticas (SPN)
+# git init Utilizando Redes de Petri Estocásticas (SPN)
 
 Este repositório contém os arquivos de configuração, modelos, scripts de simulação analítica, relatórios brutos e gráficos desenvolvidos para o **Trabalho 07 (Avaliação de Desempenho de Sistemas)**, referente ao **Contexto 7: Rede de Computadores Universitária (Roteador e Buffer Limitado)**.
 
