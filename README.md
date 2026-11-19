@@ -74,4 +74,4 @@ Para reproduzir os gráficos analíticos (`E1` a `E4`) localmente em sua máquin
 
 ## 🔗 Links Complementares
 
-* **Vídeo de Apresentação (5 min):** [Assista no YouTube](https://youtu.be/ExeqtNPZ8Ng)
+* **Vídeo de Apresentação (5 min):** [Assista no YouTube](https://youtu.be/861kjQak_Rc)
